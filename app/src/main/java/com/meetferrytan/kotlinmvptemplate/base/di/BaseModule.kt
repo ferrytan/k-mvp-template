@@ -78,7 +78,6 @@ abstract class BaseModule {
         fun provideConnectivityManager(application: Application): ConnectivityManager =
                 application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-
         @JvmStatic
         @Provides
         @Singleton
