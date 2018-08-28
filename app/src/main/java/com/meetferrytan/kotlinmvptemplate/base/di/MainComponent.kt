@@ -1,6 +1,7 @@
 package com.meetferrytan.kotlinmvptemplate.base.di
 
 import com.meetferrytan.kotlinmvptemplate.MyApplication
+import com.meetferrytan.kotlinmvptemplate.util.schedulers.SchedulerModule
 import dagger.Component
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
@@ -12,6 +13,9 @@ import javax.inject.Singleton
 
 @Component(modules = [
     BaseModule::class,
+    NetworkModule::class,
+    SchedulerModule::class,
+    AndroidBindingModule::class,
     AndroidSupportInjectionModule::class])
 @Singleton
 interface MainComponent : AndroidInjector<MyApplication> {
