@@ -108,10 +108,6 @@ dependencies {
     // Timber
     implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
 
-    // ButterKnife
-    implementation "com.jakewharton:butterknife:$rootProject.butterKnifeVersion"
-    kapt "com.jakewharton:butterknife-compiler:$rootProject.butterKnifeVersion"
-
     // Dagger
     implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
     implementation "com.google.dagger:dagger-android:$rootProject.daggerVersion"
