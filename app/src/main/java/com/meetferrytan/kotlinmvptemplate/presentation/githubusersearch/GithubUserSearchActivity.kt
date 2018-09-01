@@ -1,14 +1,12 @@
 package com.meetferrytan.kotlinmvptemplate.presentation.githubusersearch
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.text.method.ScrollingMovementMethod
 import com.meetferrytan.kotlinmvptemplate.R
 import com.meetferrytan.kotlinmvptemplate.base.presentation.BaseMvpActivity
 import com.meetferrytan.kotlinmvptemplate.data.entity.User
 import com.meetferrytan.kotlinmvptemplate.presentation.userdetail.UserDetailFragment
 import dagger.android.AndroidInjection
-import dagger.android.AndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_example.*
 import kotlinx.android.synthetic.main.content_example.*
@@ -79,10 +77,6 @@ class GithubUserSearchActivity : BaseMvpActivity<GithubUserSearchPresenter, Gith
                 appendLog("${currentDateTime()} Done fetching user data\n")
             }
         }
-    }
-
-    override fun supportFragmentInjector(): AndroidInjector<Fragment>? {
-        return fragmentInjector
     }
 
     override fun showUserDetail(user: User) {

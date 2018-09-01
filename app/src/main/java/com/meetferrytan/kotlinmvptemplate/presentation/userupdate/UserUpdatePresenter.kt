@@ -2,9 +2,7 @@ package com.meetferrytan.kotlinmvptemplate.presentation.userupdate
 
 
 import com.meetferrytan.kotlinmvptemplate.base.presentation.BasePresenter
-import com.meetferrytan.kotlinmvptemplate.data.entity.GithubRepository
 import com.meetferrytan.kotlinmvptemplate.data.repository.remote.UserRestInterface
-import com.meetferrytan.kotlinmvptemplate.util.callback.DataRequestCallback
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -16,6 +14,20 @@ import javax.inject.Inject
 
 class UserUpdatePresenter @Inject
 constructor(private val mUserRestInterface: UserRestInterface) : BasePresenter<UserUpdateContract.View>(), UserUpdateContract.Presenter {
+    override fun getUserUpdate(username: String?) {
+        val params = HashMap<String, String>()
+        params[PARAM_QUERY] = "user:$username+pushed:>${lastWeekDateGithubFormatted()}"
+        params[PARAM_SORT] = "updated"
+        subscribeFlowableRequest(
+                mUserRestInterface.searchRepositories(params)
+                        .flatMapIterable { it.items }
+                        .take(1),
+                PROCESS_GET_USER_UPDATE,
+                dataRequestCallback = {
+                    val updateText = "Last pushed \"${it.name}\" repository at ${formatLastPushedDate(it.pushedAt)}"
+                    view?.showUserUpdate(updateText)
+                })
+    }
 
     private fun lastWeekDateGithubFormatted(): String {
         val lastWeek = Calendar.getInstance()
@@ -30,23 +42,6 @@ constructor(private val mUserRestInterface: UserRestInterface) : BasePresenter<U
     private fun formatLastPushedDate(lastPushedDate: Date?): String {
         val simpleDateFormat = SimpleDateFormat("dd-MM HH:mm:ss.SSS", Locale.getDefault())
         return simpleDateFormat.format(lastPushedDate)
-    }
-
-    override fun getUserUpdate(username: String?) {
-        val params = HashMap<String, String>()
-        params[PARAM_QUERY] = "user:$username+pushed:>${lastWeekDateGithubFormatted()}"
-        params[PARAM_SORT] = "updated"
-        subscribeFlowableRequest<GithubRepository>(
-                mUserRestInterface.searchRepositories(params)
-                        .flatMapIterable { it.items }
-                        .take(1),
-                PROCESS_GET_USER_UPDATE,
-                object : DataRequestCallback<GithubRepository> {
-                    override fun onRequestSuccess(result: GithubRepository) {
-                        val updateText = "Last pushed \"${result.name}\" repository at ${formatLastPushedDate(result.pushedAt)}"
-                        view?.showUserUpdate(updateText)
-                    }
-                })
     }
 
     companion object {

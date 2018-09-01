@@ -5,8 +5,6 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.OnLifecycleEvent
-import com.meetferrytan.kotlinmvptemplate.util.callback.CompletedRequestCallback
-import com.meetferrytan.kotlinmvptemplate.util.callback.DataRequestCallback
 import com.meetferrytan.kotlinmvptemplate.util.schedulers.SchedulerTransformers
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -50,13 +48,13 @@ abstract class BasePresenter<V : BaseContract.View> : BaseContract.Presenter<V>,
      * @param dataRequestCallback -> data request callback
      * @param <F>                 -> generic response object
     </F> */
-    protected fun <F> subscribeMaybeRequest(maybe: Maybe<F>, processId: Int, dataRequestCallback: DataRequestCallback<F>) {
+    protected fun <F> subscribeMaybeRequest(maybe: Maybe<F>, processId: Int, dataRequestCallback: (F) -> Unit) {
         addDisposable(maybe
                 .compose(schedulerTransformers.applyMaybeIoSchedulers())
                 .doOnSubscribe { showLoading(processId, true) }
                 .doAfterTerminate { showLoading(processId, false) }
                 .subscribe(
-                        { result -> dataRequestCallback.onRequestSuccess(result) },
+                        { result -> dataRequestCallback(result) },
                         { throwable -> showError(processId, throwable) },
                         { Timber.d("no data to emit for %d", processId) }))
     }
@@ -69,26 +67,14 @@ abstract class BasePresenter<V : BaseContract.View> : BaseContract.Presenter<V>,
      * @param dataRequestCallback -> data request callback
      * @param <F>                 -> generic response object
     </F> */
-    protected fun <F> subscribeSingleRequest(single: Single<F>, processId: Int, dataRequestCallback: DataRequestCallback<F>) {
+    protected fun <F> subscribeSingleRequest(single: Single<F>, processId: Int, dataRequestCallback: (F) -> Unit) {
         addDisposable(single
                 .compose(schedulerTransformers.applySingleIoSchedulers())
                 .doOnSubscribe { showLoading(processId, true) }
                 .doAfterTerminate { showLoading(processId, false) }
                 .subscribe(
-                        { result -> dataRequestCallback.onRequestSuccess(result) },
+                        { result -> dataRequestCallback(result) },
                         { throwable -> showError(processId, throwable) }))
-    }
-
-    /**
-     * Method to simplify processing Flowable Request
-     *
-     * @param flowable            -> Flowable request to process.
-     * @param processId           -> unique processId from child presenter
-     * @param dataRequestCallback -> data request callback
-     * @param <F>                 -> generic response object
-    </F> */
-    protected fun <F> subscribeFlowableRequest(flowable: Flowable<F>, processId: Int, dataRequestCallback: DataRequestCallback<F>) {
-        subscribeFlowableRequest(flowable, processId, dataRequestCallback, null)
     }
 
     /**
@@ -100,15 +86,15 @@ abstract class BasePresenter<V : BaseContract.View> : BaseContract.Presenter<V>,
      * @param completedRequestCallback -> request completion callback
      * @param <F>                      -> generic response object
     </F> */
-    protected fun <F> subscribeFlowableRequest(flowable: Flowable<F>, processId: Int, dataRequestCallback: DataRequestCallback<F>, completedRequestCallback: CompletedRequestCallback?) {
+    protected fun <F> subscribeFlowableRequest(flowable: Flowable<F>, processId: Int, dataRequestCallback: (F) -> Unit, completedRequestCallback: () -> Unit = {}) {
         addDisposable(flowable
                 .compose(schedulerTransformers.applyFlowableIoSchedulers())
                 .doOnSubscribe { showLoading(processId, true) }
                 .doAfterNext { showLoading(processId, false) }
                 .subscribe(
-                        { result -> dataRequestCallback.onRequestSuccess(result) },
+                        { result -> dataRequestCallback(result) },
                         { throwable -> showError(processId, throwable) },
-                        { completedRequestCallback?.onComplete() }))
+                        { completedRequestCallback() }))
     }
 
     /**
@@ -118,13 +104,13 @@ abstract class BasePresenter<V : BaseContract.View> : BaseContract.Presenter<V>,
      * @param processId                -> unique processId from child presenter
      * @param completedRequestCallback -> request completion callback
      */
-    protected fun subscribeCompletableRequest(completable: Completable, processId: Int, completedRequestCallback: CompletedRequestCallback) {
+    protected fun subscribeCompletableRequest(completable: Completable, processId: Int, completedRequestCallback: () -> Unit) {
         addDisposable(completable
                 .compose(schedulerTransformers.applyCompletableIoSchedulers())
                 .doOnSubscribe { showLoading(processId, true) }
                 .doAfterTerminate { showLoading(processId, false) }
                 .subscribe(
-                        { completedRequestCallback.onComplete() },
+                        { completedRequestCallback() },
                         { throwable -> showError(processId, throwable) }))
     }
 

@@ -1,7 +1,6 @@
 package com.meetferrytan.kotlinmvptemplate.presentation.userdetail
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import com.meetferrytan.kotlinmvptemplate.R
 import com.meetferrytan.kotlinmvptemplate.base.presentation.BaseMvpFragment
 import com.meetferrytan.kotlinmvptemplate.data.entity.User
 import com.meetferrytan.kotlinmvptemplate.presentation.userupdate.UserUpdateFragment
-import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.fragment_example.*
@@ -47,10 +45,6 @@ class UserDetailFragment : BaseMvpFragment<UserDetailPresenter, UserDetailContra
 
     fun updateUserInfo(user: User) {
         presenter.updateUserDetail(user)
-    }
-
-    override fun supportFragmentInjector(): AndroidInjector<Fragment>? {
-        return childFragmentInjector
     }
 
     override fun displayUser(avatar: String?, name: String?, username: String?, location: String?, blog: String?, repos: String?) {

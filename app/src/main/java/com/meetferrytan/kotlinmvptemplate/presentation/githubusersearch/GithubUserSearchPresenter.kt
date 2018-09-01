@@ -1,9 +1,7 @@
 package com.meetferrytan.kotlinmvptemplate.presentation.githubusersearch
 
 import com.meetferrytan.kotlinmvptemplate.base.presentation.BasePresenter
-import com.meetferrytan.kotlinmvptemplate.data.entity.User
 import com.meetferrytan.kotlinmvptemplate.data.repository.remote.UserRestInterface
-import com.meetferrytan.kotlinmvptemplate.util.callback.DataRequestCallback
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -51,10 +49,8 @@ constructor(private val mUserRestInterface: UserRestInterface) : BasePresenter<G
         subscribeSingleRequest(
                 mUserRestInterface.getUserDetail(username),
                 PROCESS_GET_USER_DETAIL,
-                object : DataRequestCallback<User> {
-                    override fun onRequestSuccess(result: User) {
-                        view?.showUserDetail(result)
-                    }
+                dataRequestCallback = {
+                        view?.showUserDetail(it)
                 }
         )
     }
