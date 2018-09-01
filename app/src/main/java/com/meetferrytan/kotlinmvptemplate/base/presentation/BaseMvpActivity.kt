@@ -3,7 +3,6 @@ package com.meetferrytan.kotlinmvptemplate.base.presentation
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleRegistry
 import android.os.Bundle
-import butterknife.ButterKnife
 import javax.inject.Inject
 
 abstract class BaseMvpActivity<P : BaseContract.Presenter<V>, V : BaseContract.View> : BaseActionBarActivity() {
@@ -31,10 +30,9 @@ abstract class BaseMvpActivity<P : BaseContract.Presenter<V>, V : BaseContract.V
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        lifecycleRegistry = LifecycleRegistry(this)
         super.onCreate(savedInstanceState)
         setContentView(setLayoutRes())
-        ButterKnife.bind(this)
-        lifecycleRegistry = LifecycleRegistry(this)
         processIntentExtras(intent.extras)
         startingUpActivity(savedInstanceState)
     }

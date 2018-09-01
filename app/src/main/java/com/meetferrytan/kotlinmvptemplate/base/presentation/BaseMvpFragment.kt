@@ -39,8 +39,8 @@ abstract class BaseMvpFragment<P : BaseContract.Presenter<V>, V : BaseContract.V
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         lifecycleRegistry = LifecycleRegistry(this)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -55,16 +55,16 @@ android {
     productFlavors {
         develop {
             applicationIdSuffix ".dev"
-            buildConfigField "String", "BASE_URL", '"https://dev-api.domain/"'
+            buildConfigField "String", "BASE_URL", '"https://api.github.com/"'
             dimension "mode"
         }
         staging {
             applicationIdSuffix ".sta"
-            buildConfigField "String", "BASE_URL", '"https://sta-api.domain/"'
+            buildConfigField "String", "BASE_URL", '"https://api.github.com/"'
             dimension "mode"
         }
         prod {
-            buildConfigField "String", "BASE_URL", '"https://api.domain/"'
+            buildConfigField "String", "BASE_URL", '"https://api.github.com/"'
             dimension "mode"
         }
     }
