@@ -12,6 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+
+        <meta-data
+            android:name=".util.glide.MyGlideModule"
+            android:value="GlideModule"/>
         <activity android:name=".presentation.githubusersearch.GithubUserSearchActivity"
                   android:label="@string/app_name"
                   android:theme="@style/AppTheme.NoActionBar">

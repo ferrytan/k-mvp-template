@@ -10,7 +10,7 @@ import com.bumptech.glide.request.RequestOptions
  */
 
 @GlideExtension
-object CiayoGlideExtension {
+object MyGlideExtension {
 
     @GlideOption
     @JvmStatic

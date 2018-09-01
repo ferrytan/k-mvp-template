@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
  */
 
 @GlideModule
-class CiayoGlideModule : AppGlideModule() {
+class MyGlideModule : AppGlideModule() {
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
         val builder = OkHttpClient.Builder()
         builder.connectTimeout(15, TimeUnit.SECONDS) // connect timeout
