@@ -9,7 +9,7 @@ import com.meetferrytan.kotlinmvptemplate.base.presentation.BaseMvpFragment
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.child_fragment_example.*
 
-class UserUpdateFragment : BaseMvpFragment<UserUpdatePresenter, UserUpdateContract.View>(), UserUpdateContract.View {
+class UserUpdateFragment : BaseMvpFragment<UserUpdateContract.Presenter, UserUpdateContract.View>(), UserUpdateContract.View {
 
     public override fun inject() {
         AndroidSupportInjection.inject(this)
@@ -22,11 +22,9 @@ class UserUpdateFragment : BaseMvpFragment<UserUpdatePresenter, UserUpdateContra
 
     }
 
-    public override fun startingUpFragment(view: View, savedInstanceState: Bundle?) {
+    public override fun startingUpFragment(savedInstanceState: Bundle?) {
 
     }
-
-    public override fun getViewImpl(): UserUpdateContract.View? = this
 
     override fun showError(processCode: Int, throwable: Throwable) {
         txvUpdate.text = "Error fetching user update: ${throwable.message}"

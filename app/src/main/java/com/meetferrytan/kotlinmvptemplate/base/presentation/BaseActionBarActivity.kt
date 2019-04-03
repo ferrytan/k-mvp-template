@@ -3,13 +3,18 @@ package com.meetferrytan.kotlinmvptemplate.base.presentation
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
+import com.meetferrytan.kotlinmvptemplate.base.getDisplayHeight
+import com.meetferrytan.kotlinmvptemplate.base.getDisplayWidth
+import com.meetferrytan.kotlinmvptemplate.base.getNavigationBarHeight
+import com.meetferrytan.kotlinmvptemplate.base.getStatusBarHeight
 
-/**
- * Created by ferrytan on 9/20/17.
- */
+abstract class BaseActionBarActivity : AppCompatActivity() {
+    val navBarHeight by lazy { getNavigationBarHeight() }
+    val statusBarHeight by lazy { getStatusBarHeight() }
+    val displayHeight by lazy { getDisplayHeight() }
+    val displayWidth by lazy { getDisplayWidth() }
 
-abstract class BaseActionBarActivity : BaseInjectionActivity() {
-    
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val itemId = item.itemId
         when (itemId) {
@@ -57,5 +62,4 @@ abstract class BaseActionBarActivity : BaseInjectionActivity() {
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
     }
-
 }

@@ -3,28 +3,33 @@ package com.meetferrytan.kotlinmvptemplate.presentation.userupdate
 
 import com.meetferrytan.kotlinmvptemplate.base.presentation.BasePresenter
 import com.meetferrytan.kotlinmvptemplate.data.repository.remote.UserRestInterface
+import com.meetferrytan.kotlinmvptemplate.util.schedulers.SchedulerTransformers
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Created by ferrytan on 11/8/17.
  */
 
-class UserUpdatePresenter @Inject
-constructor(private val mUserRestInterface: UserRestInterface) : BasePresenter<UserUpdateContract.View>(), UserUpdateContract.Presenter {
+class UserUpdatePresenter(
+        schedulerTransformers: SchedulerTransformers,
+        private val mUserRestInterface: UserRestInterface)
+    : BasePresenter<UserUpdateContract.View>(schedulerTransformers), UserUpdateContract.Presenter {
     override fun getUserUpdate(username: String?) {
         val params = HashMap<String, String>()
         params[PARAM_QUERY] = "user:$username+pushed:>${lastWeekDateGithubFormatted()}"
         params[PARAM_SORT] = "updated"
-        subscribeFlowableRequest(
-                mUserRestInterface.searchRepositories(params)
-                        .flatMapIterable { it.items }
-                        .take(1),
+
+        subscribeSingleRequest(
+                mUserRestInterface.searchRepositories(params).map { it.items!! },
                 PROCESS_GET_USER_UPDATE,
-                dataRequestCallback = {
-                    val updateText = "Last pushed \"${it.name}\" repository at ${formatLastPushedDate(it.pushedAt)}"
+                dataRequestCallback = { result ->
+                    val updateText = if (result.isEmpty()) {
+                        "User hasn't pushed anything in the past week"
+                    } else {
+                        result[0].let { "Last pushed \"${it.name}\" repository at ${formatLastPushedDate(it.pushedAt)}" }
+                    }
                     view?.showUserUpdate(updateText)
                 })
     }

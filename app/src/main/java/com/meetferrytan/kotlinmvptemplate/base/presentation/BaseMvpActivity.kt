@@ -1,18 +1,15 @@
 package com.meetferrytan.kotlinmvptemplate.base.presentation
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleRegistry
 import android.os.Bundle
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
 import javax.inject.Inject
 
-abstract class BaseMvpActivity<P : BaseContract.Presenter<V>, V : BaseContract.View> : BaseActionBarActivity() {
+abstract class BaseMvpActivity<P : BaseContract.Presenter<V>, V: BaseContract.View> : BaseInjectionActivity(){
+    @Inject
+    lateinit var presenter: P
 
-    private lateinit var lifecycleRegistry: LifecycleRegistry
-
-    protected lateinit var presenter: P
-        private set
-
-    protected abstract fun getViewImpl(): V?
+    private var lifecycleRegistry: LifecycleRegistry? = null
 
     protected abstract fun setLayoutRes(): Int
 
@@ -20,18 +17,11 @@ abstract class BaseMvpActivity<P : BaseContract.Presenter<V>, V : BaseContract.V
 
     protected abstract fun startingUpActivity(savedInstanceState: Bundle?)
 
-    @Inject
-    fun setupPresenter(presenter: P) {
-        this.presenter = presenter
-        if (getViewImpl() == null) {
-            throw UnsupportedOperationException("Must provide MVP View")
-        }
-        this.presenter.attachView(getViewImpl())
-    }
-
+    @Suppress("UNCHECKED_CAST")
     override fun onCreate(savedInstanceState: Bundle?) {
-        lifecycleRegistry = LifecycleRegistry(this)
         super.onCreate(savedInstanceState)
+        lifecycleRegistry = LifecycleRegistry(this)
+        this.presenter.attachView(this as V)
         setContentView(setLayoutRes())
         processIntentExtras(intent.extras)
         startingUpActivity(savedInstanceState)
@@ -39,10 +29,12 @@ abstract class BaseMvpActivity<P : BaseContract.Presenter<V>, V : BaseContract.V
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.detachView()
+        this.presenter.detachView()
     }
 
     override fun getLifecycle(): Lifecycle {
-        return lifecycleRegistry
+        if(lifecycleRegistry == null)
+            lifecycleRegistry = LifecycleRegistry(this)
+        return lifecycleRegistry!!
     }
 }

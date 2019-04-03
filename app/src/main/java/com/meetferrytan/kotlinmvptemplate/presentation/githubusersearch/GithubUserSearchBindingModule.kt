@@ -3,6 +3,7 @@ package com.meetferrytan.kotlinmvptemplate.presentation.githubusersearch
 import com.meetferrytan.kotlinmvptemplate.base.di.scopes.FragmentScope
 import com.meetferrytan.kotlinmvptemplate.presentation.userdetail.UserDetailBindingModule
 import com.meetferrytan.kotlinmvptemplate.presentation.userdetail.UserDetailFragment
+import com.meetferrytan.kotlinmvptemplate.presentation.userdetail.UserDetailModule
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -13,6 +14,6 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class GithubUserSearchBindingModule {
     @FragmentScope
-    @ContributesAndroidInjector(modules = [UserDetailBindingModule::class])
+    @ContributesAndroidInjector(modules = [UserDetailBindingModule::class, UserDetailModule::class])
     abstract fun userDetailFragment(): UserDetailFragment
 }

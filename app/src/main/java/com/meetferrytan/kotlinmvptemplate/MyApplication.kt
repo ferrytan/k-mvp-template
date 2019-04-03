@@ -1,7 +1,7 @@
 package com.meetferrytan.kotlinmvptemplate
 
 import android.content.Context
-import android.support.multidex.MultiDex
+import androidx.multidex.MultiDex
 import com.facebook.stetho.Stetho
 import com.meetferrytan.kotlinmvptemplate.base.di.DaggerMainComponent
 import com.squareup.leakcanary.LeakCanary
