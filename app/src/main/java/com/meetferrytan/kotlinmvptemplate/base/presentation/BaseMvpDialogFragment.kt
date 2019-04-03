@@ -1,22 +1,19 @@
 package com.meetferrytan.kotlinmvptemplate.base.presentation
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleRegistry
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
 import javax.inject.Inject
 
-abstract class BaseMvpDialog<P : BaseContract.Presenter<V>, V : BaseContract.View> : DialogFragment() {
+abstract class BaseMvpDialogFragment<P : BaseContract.Presenter<V>, V : BaseContract.View> : DialogFragment() {
+    @Inject
+    lateinit var presenter: P
 
-    private lateinit var lifecycleRegistry: LifecycleRegistry
-
-    protected lateinit var presenter: P
-        private set
-
-    protected abstract fun getViewImpl(): V?
+    private var lifecycleRegistry: LifecycleRegistry? = null
 
     protected abstract fun inject()
 
@@ -24,37 +21,35 @@ abstract class BaseMvpDialog<P : BaseContract.Presenter<V>, V : BaseContract.Vie
 
     protected abstract fun processArguments(args: Bundle?)
 
-    protected abstract fun startingUpDialogFragment(view: View, savedInstanceState: Bundle?)
+    protected abstract fun startingUpDialogFragment(savedInstanceState: Bundle?)
 
-    @Inject
-    fun setupPresenter(presenter: P) {
-        this.presenter = presenter
-        if (getViewImpl() == null) {
-            throw UnsupportedOperationException("Must provide MVP View")
-        }
-        this.presenter.attachView(getViewImpl())
-    }
-
+    @Suppress("UNCHECKED_CAST")
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
+        if (this !is BaseContract.View) {
+            throw UnsupportedOperationException("Dialog Fragment must implements MVP View")
+        }
         lifecycleRegistry = LifecycleRegistry(this)
+        this.presenter.attachView(this as V)
+        processArguments(arguments)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = createLayout(inflater, container, savedInstanceState)
         processArguments(arguments)
-        startingUpDialogFragment(view, savedInstanceState)
+        startingUpDialogFragment(savedInstanceState)
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.detachView()
+        this.presenter.detachView()
     }
 
     override fun getLifecycle(): Lifecycle {
-        return lifecycleRegistry
+        if(lifecycleRegistry == null)
+            lifecycleRegistry = LifecycleRegistry(this)
+        return lifecycleRegistry!!
     }
-
 }

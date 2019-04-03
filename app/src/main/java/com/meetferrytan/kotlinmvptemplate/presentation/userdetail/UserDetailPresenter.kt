@@ -2,14 +2,14 @@ package com.meetferrytan.kotlinmvptemplate.presentation.userdetail
 
 import com.meetferrytan.kotlinmvptemplate.base.presentation.BasePresenter
 import com.meetferrytan.kotlinmvptemplate.data.entity.User
-import javax.inject.Inject
+import com.meetferrytan.kotlinmvptemplate.util.schedulers.SchedulerTransformers
 
 /**
  * Created by ferrytan on 11/8/17.
  */
 
-class UserDetailPresenter @Inject
-constructor() : BasePresenter<UserDetailContract.View>(), UserDetailContract.Presenter {
+class UserDetailPresenter(schedulerTransformers: SchedulerTransformers)
+    : BasePresenter<UserDetailContract.View>(schedulerTransformers), UserDetailContract.Presenter {
 
     override fun updateUserDetail(user: User) {
         val avatar = user.avatar

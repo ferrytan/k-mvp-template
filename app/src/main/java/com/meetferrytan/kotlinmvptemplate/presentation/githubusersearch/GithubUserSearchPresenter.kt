@@ -2,15 +2,17 @@ package com.meetferrytan.kotlinmvptemplate.presentation.githubusersearch
 
 import com.meetferrytan.kotlinmvptemplate.base.presentation.BasePresenter
 import com.meetferrytan.kotlinmvptemplate.data.repository.remote.UserRestInterface
+import com.meetferrytan.kotlinmvptemplate.util.schedulers.SchedulerTransformers
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Created by ferrytan on 10/22/17.
  */
 
-class GithubUserSearchPresenter @Inject
-constructor(private val mUserRestInterface: UserRestInterface) : BasePresenter<GithubUserSearchContract.View>(), GithubUserSearchContract.Presenter {
+class GithubUserSearchPresenter(
+        schedulerTransformers: SchedulerTransformers,
+        private val mUserRestInterface: UserRestInterface)
+    : BasePresenter<GithubUserSearchContract.View>(schedulerTransformers), GithubUserSearchContract.Presenter {
 
     override fun onCreate() {
         super.onCreate()
@@ -50,7 +52,7 @@ constructor(private val mUserRestInterface: UserRestInterface) : BasePresenter<G
                 mUserRestInterface.getUserDetail(username),
                 PROCESS_GET_USER_DETAIL,
                 dataRequestCallback = {
-                        view?.showUserDetail(it)
+                    view?.showUserDetail(it)
                 }
         )
     }

@@ -2,19 +2,20 @@ package com.meetferrytan.kotlinmvptemplate.presentation.githubusersearch
 
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.view.ViewGroup
 import com.meetferrytan.kotlinmvptemplate.R
-import com.meetferrytan.kotlinmvptemplate.base.presentation.BaseMvpActivity
+import com.meetferrytan.kotlinmvptemplate.base.presentation.BaseMvpInputActivity
 import com.meetferrytan.kotlinmvptemplate.data.entity.User
 import com.meetferrytan.kotlinmvptemplate.presentation.userdetail.UserDetailFragment
 import dagger.android.AndroidInjection
-import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_example.*
 import kotlinx.android.synthetic.main.content_example.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class GithubUserSearchActivity : BaseMvpActivity<GithubUserSearchPresenter, GithubUserSearchContract.View>(), GithubUserSearchContract.View, HasSupportFragmentInjector {
-    private var mUserDetailFragment: UserDetailFragment? = null
+class GithubUserSearchActivity : BaseMvpInputActivity<GithubUserSearchContract.Presenter, GithubUserSearchContract.View>(),
+        GithubUserSearchContract.View {
+    private lateinit var mUserDetailFragment: UserDetailFragment
     private var mLastQuery: String? = null
 
     private fun currentDateTime(): String{
@@ -42,6 +43,7 @@ class GithubUserSearchActivity : BaseMvpActivity<GithubUserSearchPresenter, Gith
             val lastQuery = edtUsername.text.toString()
             if (!lastQuery.isBlank()) {
                 mLastQuery = lastQuery
+                hideKeyBoard(this)
                 presenter.getUserDetail(lastQuery)
             }
         }
@@ -52,9 +54,6 @@ class GithubUserSearchActivity : BaseMvpActivity<GithubUserSearchPresenter, Gith
     public override fun inject() {
         AndroidInjection.inject(this)
     }
-
-    public override fun getViewImpl(): GithubUserSearchContract.View? = this
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -81,7 +80,7 @@ class GithubUserSearchActivity : BaseMvpActivity<GithubUserSearchPresenter, Gith
 
     override fun showUserDetail(user: User) {
         appendLog("${currentDateTime()} User fetched: ${user.id}-${user.name}\n")
-        mUserDetailFragment?.updateUserInfo(user)
+        mUserDetailFragment.updateUserInfo(user)
     }
 
     private fun appendLog(text: String) {
@@ -91,6 +90,18 @@ class GithubUserSearchActivity : BaseMvpActivity<GithubUserSearchPresenter, Gith
         if (textBottom > textViewHeight) {
             txvLog.scrollTo(0, textBottom - textViewHeight)
         }
+    }
+
+    override fun setRootView(): ViewGroup {
+        return root
+    }
+
+    override fun onShowKeyboard(keyboardHeight: Int) {
+
+    }
+
+    override fun onHideKeyboard() {
+
     }
 
     companion object {

@@ -10,12 +10,11 @@ import com.meetferrytan.kotlinmvptemplate.base.presentation.BaseMvpFragment
 import com.meetferrytan.kotlinmvptemplate.data.entity.User
 import com.meetferrytan.kotlinmvptemplate.presentation.userupdate.UserUpdateFragment
 import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.fragment_example.*
 
-class UserDetailFragment : BaseMvpFragment<UserDetailPresenter, UserDetailContract.View>(), UserDetailContract.View, HasSupportFragmentInjector {
+class UserDetailFragment : BaseMvpFragment<UserDetailContract.Presenter, UserDetailContract.View>(), UserDetailContract.View {
 
-    private var mUserUpdateFragment: UserUpdateFragment? = null
+    private lateinit var mUserUpdateFragment: UserUpdateFragment
 
     public override fun inject() {
         AndroidSupportInjection.inject(this)
@@ -28,12 +27,10 @@ class UserDetailFragment : BaseMvpFragment<UserDetailPresenter, UserDetailContra
 
     }
 
-    public override fun startingUpFragment(view: View, savedInstanceState: Bundle?) {
+    public override fun startingUpFragment(savedInstanceState: Bundle?) {
         mUserUpdateFragment = UserUpdateFragment.newInstance()
         childFragmentManager.beginTransaction().replace(R.id.frameLayout, mUserUpdateFragment).commit()
     }
-
-    public override fun getViewImpl(): UserDetailContract.View? = this
 
     override fun showError(processCode: Int, throwable: Throwable) {
         // not called
@@ -57,7 +54,7 @@ class UserDetailFragment : BaseMvpFragment<UserDetailPresenter, UserDetailContra
         txvBlogUrl.text = blog
         txvRepoCount.text = repos
 
-        mUserUpdateFragment?.fetchUserUpdate(username)
+        mUserUpdateFragment.fetchUserUpdate(username)
     }
 
     companion object {
