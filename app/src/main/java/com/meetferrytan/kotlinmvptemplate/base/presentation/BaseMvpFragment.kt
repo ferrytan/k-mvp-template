@@ -8,7 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
 import javax.inject.Inject
 
-abstract class BaseMvpFragment<P : BaseContract.Presenter<V>, V: BaseContract.View> : BaseInjectionFragment() {
+abstract class BaseMvpFragment<P : BaseContract.Presenter<V>, V : BaseContract.View> : BaseInjectionFragment() {
     @Inject
     lateinit var presenter: P
 
@@ -22,14 +22,12 @@ abstract class BaseMvpFragment<P : BaseContract.Presenter<V>, V: BaseContract.Vi
 
     protected abstract fun startingUpFragment(savedInstanceState: Bundle?)
 
-    @Suppress("UNCHECKED_CAST")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (this !is BaseContract.View) {
             throw UnsupportedOperationException("Fragment must implements MVP View")
         }
         lifecycleRegistry = LifecycleRegistry(this)
-        this.presenter.attachView(this as V)
         processArguments(arguments)
     }
 
@@ -37,18 +35,35 @@ abstract class BaseMvpFragment<P : BaseContract.Presenter<V>, V: BaseContract.Vi
         return createLayout(inflater, container, savedInstanceState)
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        presenter.attachView(this as V)
         startingUpFragment(savedInstanceState)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun onStart() {
+        super.onStart()
+        if (!presenter.isViewBound()) {
+            presenter.attachView(this as V)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        presenter.detachView()
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        this.presenter.detachView()
+        if (presenter.isViewBound()) {
+            presenter.detachView()
+        }
     }
 
     override fun getLifecycle(): Lifecycle {
-        if(lifecycleRegistry == null)
+        if (lifecycleRegistry == null)
             lifecycleRegistry = LifecycleRegistry(this)
         return lifecycleRegistry!!
     }

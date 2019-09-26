@@ -23,7 +23,6 @@ abstract class BaseMvpDialogFragment<P : BaseContract.Presenter<V>, V : BaseCont
 
     protected abstract fun startingUpDialogFragment(savedInstanceState: Bundle?)
 
-    @Suppress("UNCHECKED_CAST")
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
@@ -31,24 +30,44 @@ abstract class BaseMvpDialogFragment<P : BaseContract.Presenter<V>, V : BaseCont
             throw UnsupportedOperationException("Dialog Fragment must implements MVP View")
         }
         lifecycleRegistry = LifecycleRegistry(this)
-        this.presenter.attachView(this as V)
         processArguments(arguments)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = createLayout(inflater, container, savedInstanceState)
         processArguments(arguments)
-        startingUpDialogFragment(savedInstanceState)
         return view
     }
 
+    @Suppress("UNCHECKED_CAST")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        presenter.attachView(this as V)
+        startingUpDialogFragment(savedInstanceState)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun onStart() {
+        super.onStart()
+        if (!presenter.isViewBound()) {
+            presenter.attachView(this as V)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        presenter.detachView()
+        super.onSaveInstanceState(outState)
+    }
+    
     override fun onDestroyView() {
         super.onDestroyView()
-        this.presenter.detachView()
+        if (presenter.isViewBound()) {
+            presenter.detachView()
+        }
     }
 
     override fun getLifecycle(): Lifecycle {
-        if(lifecycleRegistry == null)
+        if (lifecycleRegistry == null)
             lifecycleRegistry = LifecycleRegistry(this)
         return lifecycleRegistry!!
     }

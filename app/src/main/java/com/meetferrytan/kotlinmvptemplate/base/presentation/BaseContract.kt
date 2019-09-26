@@ -16,6 +16,8 @@ interface BaseContract {
         fun attachView(mvpView: V)
 
         fun detachView()
+
+        fun isViewBound() = view!=null
     }
 
 }
