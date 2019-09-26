@@ -1,15 +1,14 @@
 package com.meetferrytan.kotlinmvptemplate.base.presentation
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
-abstract class BaseInjectionActivity : BaseActionBarActivity(), HasSupportFragmentInjector {
+abstract class BaseInjectionActivity : BaseActionBarActivity(), HasAndroidInjector {
     @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
 
     protected abstract fun inject()
 
@@ -18,7 +17,8 @@ abstract class BaseInjectionActivity : BaseActionBarActivity(), HasSupportFragme
         super.onCreate(savedInstanceState)
     }
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> {
+    override fun androidInjector(): AndroidInjector<Any> {
         return fragmentInjector
     }
+
 }

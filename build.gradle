@@ -1,13 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.3.21'
+    ext.kotlin_version = '1.3.50'
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath 'com.android.tools.build:gradle:3.5.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -31,45 +31,44 @@ task clean(type: Delete) {
 ext {
     // SDK
     minSdkVersion = 17
-    targetSdkVersion = 28
-    compileSdkVersion = 28
+    targetSdkVersion = 29
+    compileSdkVersion = 29
     buildToolsVersion = '28.0.3'
 
     versionCode = 2
     versionName = '1.1.0.0'
 
     // Dependencies
-    xcoreVersion = '1.1.0-alpha05'
-    appCompatVersion = '1.1.0-alpha02'
-    recyclerviewVersion = '1.1.0-alpha03'
-    browserVersion = '1.0.0'
+    xcoreVersion = '1.2.0-alpha04'
+    appCompatVersion = '1.1.0'
+    recyclerviewVersion = '1.1.0-beta04'
+    browserVersion = '1.2.0-alpha08'
     cardviewVersion = '1.0.0'
-    materialVersion = '1.1.0-alpha04'
     multidexVersion = '2.0.1'
-    espressoVersion = '3.1.1'
-    testCoreVersion = '1.1.0'
-    testRulesVersion = '1.1.1'
-    testRunnerVersion = '1.1.1'
-    testJUnitVersion = '1.1.0'
+    testCoreVersion = '1.2.1-alpha02'
+    testRulesVersion = '1.3.0-alpha02'
+    testRunnerVersion = '1.3.0-alpha02'
+    testJUnitVersion = '1.1.2-alpha02'
+    espressoVersion = '3.3.0-alpha02'
     archCoreVersion = '2.0.1'
-    lifecycleVersion = '2.1.0-alpha03'
-    roomVersion = '2.1.0-alpha06'
-    constraintLayoutVersion = '2.0.0-alpha3'
-    retrofitVersion = '2.5.0'
-    okhttpVersion = '3.12.2'
-    glideVersion = '4.8.0'
-    daggerVersion = '2.21'
+    lifecycleVersion = '2.2.0-alpha05'
+    roomVersion = '2.2.0-rc01'
+    constraintLayoutVersion = '2.0.0-beta2'
+    materialVersion = '1.1.0-alpha10'
+    retrofitVersion = '2.6.1'
+    okhttpVersion = '4.2.0'
+    glideVersion = '4.10.0'
+    daggerVersion = '2.24'
     timberVersion = '4.7.1'
     gsonVersion = '2.8.5'
-    skeletonPlaceholderViewVersion = '1.0.2'
-    junitVersion = '4.12'
-    mockitoVersion = '2.23.0'
+    skeletonPlaceholderViewVersion = '1.1.0'
+    mockitoVersion = '3.0.0'
     hamcrestVersion = '1.3'
-    rxJava2Version = '2.2.8'
+    rxJava2Version = '2.2.12'
     rxAndroidVersion = '2.1.1'
     rxKotlinVersion = '2.3.0'
     stethoVersion = '1.5.1'
     leakcanaryVersion = '1.6.3'
-    facebookShimmerVersion = '0.4.0'
+    facebookShimmerVersion = '0.5.0'
     javaxAnnotationVersion = '10.0-b28'
 }
